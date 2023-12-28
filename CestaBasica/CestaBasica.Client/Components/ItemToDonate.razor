@@ -1,0 +1,62 @@
+﻿@* <br />
+<select class="select-items" @bind="SelectedQuantity">
+    @foreach (var qty in Quantities)
+    {
+        <option value="@qty">@qty</option>
+    }
+</select>
+<select class="select-items" @bind="SelectedItem">
+    @foreach (var item in Items)
+    {
+        <option value="@item">@item</option>
+    }
+</select>
+<span>@SelectedItem</span>
+
+@code {
+    private string _selectedItem = string.Empty;
+    private int _selectedQuantity = 1;
+
+    [Parameter]
+    public IEnumerable<int> Quantities { get; set; } = new List<int>();
+
+    [Parameter]
+    public IEnumerable<string> Items { get; set; } = new List<string>();
+
+    [Parameter]
+    public EventCallback<Item> OnChangeCallback { get; set; }
+
+    public Guid Id { get; }
+    public int SelectedQuantity
+    {
+        get
+        {
+            return _selectedQuantity;
+        }
+        set
+        {
+            _selectedQuantity = value;
+            OnChangeCallback.InvokeAsync(this).Wait();
+        }
+    }
+
+    public string SelectedItem 
+    {
+        get
+        {
+            return _selectedItem;
+        }
+        set
+        {
+            _selectedItem = value;
+            OnChangeCallback.InvokeAsync(this).Wait();
+        }
+    }
+
+    public Item()
+    {
+        Id = Guid.NewGuid();
+        SelectedItem = Items.FirstOrDefault() ?? string.Empty;
+    }
+}
+ *@
